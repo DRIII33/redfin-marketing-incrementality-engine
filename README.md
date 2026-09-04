@@ -45,7 +45,7 @@ This misattribution created three core business challenges:
 
 * **Data Warehouse:** Google BigQuery (`driiiportfolio.redfin_marketing`)
 * **Data Processing & Analytics:** Python (Pandas, NumPy, Statsmodels)
-* **Business Intelligence:** Looker Studio Executive Dashboard
+* **Business Intelligence:** Looker Studio Executive Dashboard (2-Page Architecture)
 * **Version Control:** GitHub Actions
 
 ---
@@ -77,7 +77,7 @@ redfin-marketing-incrementality-engine/
 │   │   ├── fact_marketing_touchpoints.csv
 │   │   └── fact_conversions.csv
 │   └── processed/
-│       └── marketing_attribution_kpis.csv
+│       └── mart_attribution_kpis.csv
 │
 ├── sql/
 │   ├── 01_schema_setup.sql
