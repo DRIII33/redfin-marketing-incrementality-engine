@@ -8,16 +8,24 @@
 
 ---
 
+## Dashboard Overview
+The Looker Studio Executive Dashboard provides marketing leadership with clear visualization into channel performance, contrasting Last-Touch metrics against Causal Incremental performance.
 
-## Core Purpose
-The Looker Studio Executive Dashboard provides marketing leadership with an interactive visualization layer to monitor media efficiency, channel incrementality, and forecast budget impact across core U.S. metropolitan markets.
+## Verified Metric Summary Table
 
-## Visual Components & Layout
-1. **Header KPI Scorecard**: Total Spend, Total Conversions, Organic Baseline Conversions, Incremental Paid Lift, Blended CAC, Incremental ROAS.
-2. **Channel Performance Matrix**: Comparison table contrasting Last-Touch CPA vs. Causal Incremental CPA.
-3. **Time-Series Lift Analysis**: Stacked area chart displaying baseline organic vs. paid incremental conversions over time.
-4. **Market Geo-Testing Heatmap**: Interactive map highlighting lift coefficients across tested regional markets.
+| Metric / KPI | Value | Description |
+| :--- | :--- | :--- |
+| **Total Spend** | $13,890.46 | Total marketing investment across all channels |
+| **Last-Touch Conversions** | 4,500 | Total conversions assigned via last-click rule |
+| **True Incremental Conversions** | 3,258.29 | Conversions driven purely by marketing spend |
+| **Blended Last-Touch CPA** | $3.09 | Baseline cost per acquisition |
+| **Blended Incremental CPA** | $4.26 | True cost per incremental acquisition |
 
-## Decision Support Playbook
-- **Scale Channel**: Increase spend when Incremental ROAS > 2.5x and Channel Saturation < 70%.
-- **Optimize / Audit**: Reallocate budget when Last-Touch CPA looks favorable (<$150) but Incremental Lift Ratio is low (<0.35).
+## Executive Dashboard Layout & Schematic
+
+1. **Header KPI Scorecards (Top Row)**: Six scorecards displaying Total Spend, Last-Touch Conversions, Incremental Conversions, Blended Last-Touch CPA, Blended Incremental CPA, and Overall Incrementality Lift Ratio.
+2. **Conversion Volume Bar Chart (Middle Left)**: Side-by-side comparison of Last-Touch vs. True Incremental Conversions by channel.
+3. **Acquisition Cost Shift Bar Chart (Middle Right)**: Horizontal bar chart showing CPA expansion across channels.
+4. **Target Market Spend Distribution (Middle Center)**: Donut chart displaying budget distribution across key markets (Austin-TX, Seattle-WA, LosAngeles-CA, Chicago-IL, Phoenix-AZ).
+5. **Efficiency Scatter Plot (Lower Left)**: Maps Incremental Lift Ratio (%) against True Incremental CPA ($) with $10.00 CPA threshold line.
+6. **Campaign Detail Table (Bottom)**: Granular reporting matrix with automated budget reallocation tags (*Scale Spend*, *Maintain Budget*, *Reduce/Reallocate*).
