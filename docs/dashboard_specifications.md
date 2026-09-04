@@ -58,6 +58,7 @@ CASE
   WHEN channel IN ('Organic Search', 'Direct') THEN 'Scale Spend'
   WHEN true_incremental_cpa > 10.0 THEN 'Reduce / Reallocate'
   WHEN (true_incremental_conv / total_last_touch_conversions) < 0.60 THEN 'Reduce / Reallocate'
-  ELSE 'Maintain Budget'
+  ELSE 'Maintain Budget' 
 END
 ```
+- **Metric**: SUM(`total_channel_cost`) | Currency ($ USD)
