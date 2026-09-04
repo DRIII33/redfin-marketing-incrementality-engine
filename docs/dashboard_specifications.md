@@ -32,7 +32,7 @@
 
 ### PAGE 2: CAMPAIGN LEVEL PERFORMANCE & BUDGET OPTIMIZATION
 
-#### 1. Campaign Efficiency & Reallocation Matrix
+#### 1. Campaign Efficiency & Reallocation Matrix (Table with Heatmap)
 - **Visual Type**: Table with Heatmap
 - **Dimensions**: `campaign_name` (Text), `channel` (Text)
 - **Calculated Dimension Attribute**: `reallocation_recommendation` (Text)
@@ -42,6 +42,15 @@
   - `true_incremental_conv` | Numeric (`Decimal #.##`)
   - `last_touch_cpa` | Currency (`$ USD`)
   - `true_incremental_cpa` | Currency (`$ USD`)
+
+- **Style Panel Configuration**:
+  - **Heatmap Formatting**:
+    - Apply Heatmap color scale to `true_incremental_cpa` (**Red = High CPA**, **Green = Low CPA**).
+    - Apply Heatmap color scale to `last_touch_cpa` (**Red = High CPA**, **Green = Low CPA**).
+    - Apply Heatmap color scale to `true_incremental_conv` (**Green = High Volume**, **Light = Low Volume**).
+  - **Column Alignment**:
+    - Text columns (`campaign_name`, `channel`, `reallocation_recommendation`): **Left-Aligned**.
+    - Numeric/Currency metrics (`total_channel_cost`, `total_last_touch_conversions`, `true_incremental_conv`, `last_touch_cpa`, `true_incremental_cpa`): **Right-Aligned**.
 
 #### 2. Causal Lift Ratio vs. Incremental CPA Scatter Plot
 - **Visual Type**: Scatter Plot
