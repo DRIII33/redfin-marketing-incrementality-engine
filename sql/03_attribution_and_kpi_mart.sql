@@ -6,22 +6,51 @@
 -- ==============================================================================
 
 CREATE OR REPLACE TABLE `driiiportfolio.redfin_marketing.mart_attribution_kpis` AS
-WITH Base_Attribution AS (
+WITH User_Conversions AS (
+  SELECT
+    conversion_id,
+    user_pseudo_id,
+    TIMESTAMP(conversion_timestamp) AS conversion_timestamp,
+    CAST(monetary_value AS NUMERIC) AS monetary_value
+  FROM
+    `driiiportfolio.redfin_marketing.fact_conversions`
+),
+Attributed_Touchpoints AS (
+  SELECT
+    c.conversion_id,
+    c.user_pseudo_id,
+    c.monetary_value,
+    tp.campaign_id,
+    tp.cost,
+    ROW_NUMBER() OVER(
+      PARTITION BY c.conversion_id
+      ORDER BY tp.touchpoint_timestamp DESC
+    ) AS last_touch_rank
+  FROM
+    User_Conversions c
+  INNER JOIN
+    `driiiportfolio.redfin_marketing.stg_cleaned_touchpoints` tp
+  ON
+    c.user_pseudo_id = tp.user_pseudo_id
+    AND tp.touchpoint_timestamp <= c.conversion_timestamp
+),
+Base_Attribution AS (
   SELECT
     cmp.campaign_id,
     cmp.campaign_name,
     cmp.channel,
     cmp.target_market,
-    COUNT(DISTINCT tp.conversion_id) AS total_last_touch_conversions,
-    SUM(tp.monetary_value) AS total_attributed_value,
-    SUM(tp.cost) AS total_channel_cost,
-    SAFE_DIVIDE(SUM(tp.cost), COUNT(DISTINCT tp.conversion_id)) AS last_touch_cpa
+    CAST(COUNT(DISTINCT atp.conversion_id) AS INT64) AS total_last_touch_conversions,
+    CAST(SUM(atp.monetary_value) AS NUMERIC) AS total_attributed_value,
+    CAST(SUM(atp.cost) AS NUMERIC) AS total_channel_cost,
+    CAST(SAFE_DIVIDE(SUM(atp.cost), COUNT(DISTINCT atp.conversion_id)) AS NUMERIC) AS last_touch_cpa,
+    CAST(SAFE_DIVIDE(SUM(atp.monetary_value), SUM(atp.cost)) AS NUMERIC) AS last_touch_roas
   FROM
-    `driiiportfolio.redfin_marketing.stg_cleaned_touchpoints` tp
+    Attributed_Touchpoints atp
   LEFT JOIN
-    `driiiportfolio.redfin_marketing.dim_campaigns` cmp ON tp.campaign_id = cmp.campaign_id
+    `driiiportfolio.redfin_marketing.dim_campaigns` cmp ON atp.campaign_id = cmp.campaign_id
   WHERE
-    tp.last_touch_rank = 1
+    atp.last_touch_rank = 1
   GROUP BY
     1, 2, 3, 4
 ),
@@ -37,17 +66,10 @@ SELECT
   b.total_attributed_value,
   b.total_channel_cost,
   b.last_touch_cpa,
-  GREATEST(0.40, LEAST(1.0, 
-    (1.0 - (SAFE_DIVIDE(b.last_touch_cpa, m.max_cpa) * 0.5)) * 
-    CASE 
-      WHEN b.channel = 'Paid Search' THEN 0.85
-      WHEN b.channel = 'Display' THEN 0.70
-      WHEN b.channel = 'Partner Referral' THEN 1.10
-      ELSE 1.00
-    END
-  )) * b.total_last_touch_conversions AS true_incremental_conv,
-  SAFE_DIVIDE(
-    b.total_channel_cost, 
+  b.last_touch_roas,
+  
+  -- True Incremental Conversions: Econometrically adjusted for channel elasticity
+  CAST(
     GREATEST(0.40, LEAST(1.0, 
       (1.0 - (SAFE_DIVIDE(b.last_touch_cpa, m.max_cpa) * 0.5)) * 
       CASE 
@@ -57,7 +79,23 @@ SELECT
         ELSE 1.00
       END
     )) * b.total_last_touch_conversions
-  ) AS true_incremental_cpa
+  AS NUMERIC) AS true_incremental_conv,
+  
+  -- True Incremental CPA: Total Spend divided by True Incremental Conversions
+  CAST(
+    SAFE_DIVIDE(
+      b.total_channel_cost, 
+      GREATEST(0.40, LEAST(1.0, 
+        (1.0 - (SAFE_DIVIDE(b.last_touch_cpa, m.max_cpa) * 0.5)) * 
+        CASE 
+          WHEN b.channel = 'Paid Search' THEN 0.85
+          WHEN b.channel = 'Display' THEN 0.70
+          WHEN b.channel = 'Partner Referral' THEN 1.10
+          ELSE 1.00
+        END
+      )) * b.total_last_touch_conversions
+    )
+  AS NUMERIC) AS true_incremental_cpa
 FROM
   Base_Attribution b
 CROSS JOIN
