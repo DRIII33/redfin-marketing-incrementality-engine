@@ -68,7 +68,7 @@ SELECT
   b.last_touch_cpa,
   b.last_touch_roas,
   
-  -- True Incremental Conversions: Econometrically adjusted for channel elasticity
+  -- True Incremental Conversions
   CAST(
     GREATEST(0.40, LEAST(1.0, 
       (1.0 - (SAFE_DIVIDE(b.last_touch_cpa, m.max_cpa) * 0.5)) * 
@@ -81,7 +81,7 @@ SELECT
     )) * b.total_last_touch_conversions
   AS NUMERIC) AS true_incremental_conv,
   
-  -- True Incremental CPA: Total Spend divided by True Incremental Conversions
+  -- True Incremental CPA
   CAST(
     SAFE_DIVIDE(
       b.total_channel_cost, 
