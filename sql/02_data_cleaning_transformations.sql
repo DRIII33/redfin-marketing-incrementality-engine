@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- Script: 02_data_cleaning_transformations.sql
--- Purpose: Deduplicate touchpoints, format timestamps, build unified user journey CTEs
+-- Purpose: Deduplicate touchpoints, format timestamps, build staging tables
 -- ==============================================================================
 
 CREATE OR REPLACE TABLE `driiiportfolio.redfin_marketing.stg_cleaned_touchpoints` AS
@@ -13,7 +13,7 @@ WITH Deduplicated_Touchpoints AS (
     LOWER(device_category) AS device_category,
     CAST(cost AS NUMERIC) AS cost,
     ROW_NUMBER() OVER(
-      PARTITION BY touchpoint_id 
+      PARTITION BY touchpoint_id
       ORDER BY TIMESTAMP(timestamp) ASC
     ) AS dup_rank
   FROM
