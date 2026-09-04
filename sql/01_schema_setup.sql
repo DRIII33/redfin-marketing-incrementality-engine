@@ -2,7 +2,7 @@
 -- Script: 01_schema_setup.sql
 -- Project ID: driiiportfolio
 -- Dataset: redfin_marketing
--- Purpose: Schema verification and table setup
+-- Purpose: Schema verification and dataset initialization
 -- ==============================================================================
 
 CREATE SCHEMA IF NOT EXISTS `driiiportfolio.redfin_marketing`
